@@ -34,7 +34,7 @@ def category(request, category_name_slug):
     return render(request, 'rango/category.html', context_dict)
 
 
-
 def about(request):
-    return HttpResponse("Rango says here is the about page. <br/> <a href='/rango/'>Index</a>")
+    context_dict = {'aboutmessage': "This tutorial has been put together by Paul Cowie, 2082442"}
+    return render(request, 'rango/about.html', context_dict)
 
