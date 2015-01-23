@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html>
+
+    <head>
+        <title>About</title>
+    </head>
+
+    <body>
+        <p>{{ aboutmessage }}</p>
+        <a href="{% url 'index' %}">Index</a><br />
+        <img style="width: 483px; height: 670px;" src="{% static 'images/myPicture.jpg' %}" alt="Picture of Me" />
+    </body>
+
+</html>
