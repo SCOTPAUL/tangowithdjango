@@ -8,6 +8,11 @@ from rango.models import Category, Page
 
 
 def populate():
+    # Delete all existing Categories and Pages in db
+    Category.objects.all().delete()
+    Page.objects.all().delete()
+
+    # Add new Categories and Pages to db
     python_cat = add_cat('Python',
                          views=128,
                          likes=64)
@@ -68,7 +73,7 @@ def populate():
 
     add_page(cat=student_cat,
              title="Pythonanywhere",
-             url="http://scotpaul.pythonanywhere.com/",
+             url="http://scotpaul.pythonanywhere.com/rango/",
              views=12)
 
     # Print out what we have added to the user.

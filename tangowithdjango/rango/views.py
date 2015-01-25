@@ -37,4 +37,3 @@ def category(request, category_name_slug):
 def about(request):
     context_dict = {'aboutmessage': "This tutorial has been put together by Paul Cowie, 2082442"}
     return render(request, 'rango/about.html', context_dict)
-
