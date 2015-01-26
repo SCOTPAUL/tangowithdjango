@@ -1,5 +1,6 @@
-from django.shortcuts import HttpResponse, render
+from django.shortcuts import render
 from models import Category, Page
+from forms import CategoryForm, PageForm
 
 def index(request):
     # Retrieve the 5 highest rated categories
@@ -37,3 +38,51 @@ def category(request, category_name_slug):
 def about(request):
     context_dict = {'aboutmessage': "This tutorial has been put together by Paul Cowie, 2082442"}
     return render(request, 'rango/about.html', context_dict)
+
+
+def add_category(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+
+        if form.is_valid():
+            form.save(commit=True)
+
+            # Show the user the index page
+            return index(request)
+
+        else:
+            # Print form errors to the terminal
+            print form.errors
+
+    else:
+        # If the request was not a post, display the Category creation form
+        form = CategoryForm()
+
+    # If form is invalid, render the form with any error messages
+    return render(request, 'rango/add_category.html', {'form': form})
+
+def add_page(request, category_name_slug):
+    try:
+        cat = Category.objects.get(slug=category_name_slug)
+    except Category.DoesNotExist:
+        cat = None
+
+    if request.method == 'POST':
+        form = PageForm(request.POST)
+        if form.is_valid():
+            if cat:
+                page = form.save(commit=False)
+                page.category = cat
+                page.views = 0
+                page.save()
+
+                return category(request, category_name_slug)
+        else:
+            print form.errors
+
+    else:
+        form = PageForm()
+
+    context_dict = {'form': form, 'category': cat}
+
+    return render(request, 'rango/add_page.html', context_dict)
