@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from models import Category, Page
-from forms import CategoryForm, PageForm
+from forms import CategoryForm, PageForm, UserForm, UserProfileForm
 
 
 def index(request):
@@ -88,3 +88,47 @@ def add_page(request, category_name_slug):
     context_dict = {'form': form, 'category': cat}
 
     return render(request, 'rango/add_page.html', context_dict)
+
+
+def register(request):
+    # Used for telling the template if a user has registered yet
+    registered = False
+
+    if request.method == 'POST':
+        user_form = UserForm(data=request.POST)
+        profile_form = UserProfileForm(data=request.POST)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+
+            # Hash the user's password and update
+            # the user with this hashed password
+            user.set_password(user.password)
+            user.save()
+
+            # Now deal with the UserProfile instance
+            profile = profile_form.save(commit=False)
+            profile.user = user
+
+            # If a profile picture was provided, get this
+            if 'picture' in request.FILES:
+                profile.picture = request.FILES['picture']
+
+            # Now that the picture has been dealt with, save
+            profile.save()
+
+            # Now the user has been registered
+            registered = True
+
+        # Invalid form
+        else:
+            print user_form.errors, profile_form.errors
+
+    # If the request is not a POST, show the forms
+    else:
+        user_form = UserForm()
+        profile_form = UserProfileForm()
+
+    return render(request, 'rango/register.html', {'user_form': user_form,
+                                                   'profile_form': profile_form,
+                                                   'registered': registered})
