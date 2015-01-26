@@ -2,6 +2,7 @@ from django.shortcuts import render
 from models import Category, Page
 from forms import CategoryForm, PageForm
 
+
 def index(request):
     # Retrieve the 5 highest rated categories
     # If fewer than 5 exist, that amount will be retrieved instead
@@ -60,6 +61,7 @@ def add_category(request):
 
     # If form is invalid, render the form with any error messages
     return render(request, 'rango/add_category.html', {'form': form})
+
 
 def add_page(request, category_name_slug):
     try:

@@ -1,6 +1,7 @@
 from django import forms
 from models import Page, Category
 
+
 class CategoryForm(forms.ModelForm):
     name = forms.CharField(max_length=128, help_text="Please enter the category name")
     views = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
@@ -12,6 +13,7 @@ class CategoryForm(forms.ModelForm):
         model = Category
         fields = ('name',)
 
+
 class PageForm(forms.ModelForm):
     title = forms.CharField(max_length=128, help_text="Please enter the title of the page.")
     url = forms.URLField(max_length=200, help_text="Please enter the page's URL.")
@@ -22,7 +24,7 @@ class PageForm(forms.ModelForm):
         url = cleaned_data.get('url')
 
         # If the url is nonempty and doesn't start with 'http://', add 'http://'
-        if url and not url.startswith('http://'):
+        if url and not (url.startswith('http://') or url.startswith('https://')):
             url = 'http://' + url
             cleaned_data['url'] = url
 
