@@ -1,3 +1,6 @@
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from models import Category, Page
 from forms import CategoryForm, PageForm, UserForm, UserProfileForm
@@ -41,6 +44,7 @@ def about(request):
     return render(request, 'rango/about.html', context_dict)
 
 
+@login_required
 def add_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -63,6 +67,7 @@ def add_category(request):
     return render(request, 'rango/add_category.html', {'form': form})
 
 
+@login_required
 def add_page(request, category_name_slug):
     try:
         cat = Category.objects.get(slug=category_name_slug)
@@ -132,3 +137,49 @@ def register(request):
     return render(request, 'rango/register.html', {'user_form': user_form,
                                                    'profile_form': profile_form,
                                                    'registered': registered})
+
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(username=username, password=password)
+
+        # If user is correctly authenticated...
+        if user:
+            if user.is_active:
+                login(request, user)
+
+                # Send user back to homepage
+                return HttpResponseRedirect('/rango/')
+            else:
+                return HttpResponse("Your Rango account is disabled.")
+        # Bad login details were provided.
+        else:
+            print "Invalid login details: {0}, {1}".format(username, password)
+
+            invalid_detail_message = "Invalid login details supplied: "
+            if username == "" or password == "":
+                invalid_detail_message += "Username or password fields were empty."
+            else:
+                invalid_detail_message += "Username or password were incorrect."
+
+            return HttpResponse(invalid_detail_message)
+
+    # Not a POST, so display the form
+    else:
+        return render(request, 'rango/login.html', {})
+
+
+@login_required
+def restricted(request):
+    return HttpResponse("Since you are logged in, you can see this text!")
+
+
+@login_required
+def user_logout(request):
+    logout(request)
+
+    return HttpResponseRedirect('/rango/')
+
