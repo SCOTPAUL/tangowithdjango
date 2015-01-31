@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from models import Category, Page
 from forms import CategoryForm, PageForm, UserForm, UserProfileForm
+from datetime import datetime
 
 
 def index(request):
@@ -15,6 +16,32 @@ def index(request):
     page_list = Page.objects.order_by('-views')[:5]
 
     context_dict = {'categories': category_list, 'pages': page_list}
+
+    # Get number of visits to the site
+    # If the cookie does not exist, set visits to 1
+    visits = request.session.get('visits', 1)
+    reset_last_visit_time = False
+
+    last_visit = request.session.get('last_visit')
+
+    if last_visit:
+        last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
+
+        if(datetime.now() - last_visit_time).days > 0:
+            visits += 1
+
+            # Flag last_visit cookie to be updated
+            reset_last_visit_time = True
+
+    else:
+        # last_visit cookie doesn't exist, flag it for resetting
+        reset_last_visit_time = True
+
+    if reset_last_visit_time:
+        request.session['last_visit'] = str(datetime.now())
+        request.session['visits'] = visits
+
+    context_dict['visits'] = visits
     return render(request, 'rango/index.html', context_dict)
 
 
@@ -40,7 +67,14 @@ def category(request, category_name_slug):
 
 
 def about(request):
-    context_dict = {'aboutmessage': "This tutorial has been put together by Paul Cowie, 2082442"}
+    if request.session.get('visits'):
+        count = request.session.get('visits')
+    else:
+        count = 0
+
+    context_dict = {'aboutmessage': "This tutorial has been put together by Paul Cowie, 2082442",
+                    'visits': count}
+
     return render(request, 'rango/about.html', context_dict)
 
 
@@ -183,6 +217,3 @@ def user_logout(request):
     logout(request)
 
     return HttpResponseRedirect('/rango/')
-
-
-
