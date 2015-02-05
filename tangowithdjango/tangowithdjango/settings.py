@@ -110,3 +110,8 @@ ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
 LOGIN_REDIRECT_URL = '/rango/'
 LOGIN_URL = '/accounts/login/'
+
+
+# Testing email settings
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

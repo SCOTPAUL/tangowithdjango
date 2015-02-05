@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
+from django.core.mail import send_mail
 from django.shortcuts import render
-from models import Category, Page
-from forms import CategoryForm, PageForm, UserForm, UserProfileForm
+from models import Category, Page, User
+from forms import CategoryForm, PageForm, UserForm, UserProfileForm, UserResetPassword
 from datetime import datetime
 
 
@@ -78,6 +79,30 @@ def about(request):
     return render(request, 'rango/about.html', context_dict)
 
 
+def reset_password(request):
+    if request.method == 'POST':
+        form = UserResetPassword(request.POST)
+
+        if form.is_valid():
+            reset_email = form.cleaned_data['reset_email']
+            try:
+                user = User.objects.get(email=reset_email)
+                print 'Sending email to ' + user.email
+            except User.DoesNotExist:
+                user = None
+
+            if user:
+                send_mail('Test', 'Message Test', 'test@example.com',
+                          [user.email], fail_silently=False)
+
+            return HttpResponseRedirect('/rango/')
+
+    else:
+        form = UserResetPassword()
+
+        return render(request, 'rango/password_reset.html', {'form': form})
+
+
 @login_required
 def add_category(request):
     if request.method == 'POST':
@@ -129,91 +154,7 @@ def add_page(request, category_name_slug):
     return render(request, 'rango/add_page.html', context_dict)
 
 
-def register(request):
-    # Used for telling the template if a user has registered yet
-    registered = False
-
-    if request.method == 'POST':
-        user_form = UserForm(data=request.POST)
-        profile_form = UserProfileForm(data=request.POST)
-
-        if user_form.is_valid() and profile_form.is_valid():
-            user = user_form.save()
-
-            # Hash the user's password and update
-            # the user with this hashed password
-            user.set_password(user.password)
-            user.save()
-
-            # Now deal with the UserProfile instance
-            profile = profile_form.save(commit=False)
-            profile.user = user
-
-            # If a profile picture was provided, get this
-            if 'picture' in request.FILES:
-                profile.picture = request.FILES['picture']
-
-            # Now that the picture has been dealt with, save
-            profile.save()
-
-            # Now the user has been registered
-            registered = True
-
-        # Invalid form
-        else:
-            print user_form.errors, profile_form.errors
-
-    # If the request is not a POST, show the forms
-    else:
-        user_form = UserForm()
-        profile_form = UserProfileForm()
-
-    return render(request, 'rango/register.html', {'user_form': user_form,
-                                                   'profile_form': profile_form,
-                                                   'registered': registered})
-
-
-def user_login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = authenticate(username=username, password=password)
-
-        # If user is correctly authenticated...
-        if user:
-            if user.is_active:
-                login(request, user)
-
-                # Send user back to homepage
-                return HttpResponseRedirect('/rango/')
-            else:
-                return HttpResponse("Your Rango account is disabled.")
-        # Bad login details were provided.
-        else:
-            print "Invalid login details: {0}, {1}".format(username, password)
-
-            invalid_detail_message = "Invalid login details supplied: "
-            if username == "" or password == "":
-                invalid_detail_message += "Username or password fields were empty."
-            else:
-                invalid_detail_message += "Username or password were incorrect."
-
-            return HttpResponse(invalid_detail_message)
-
-    # Not a POST, so display the form
-    else:
-        return render(request, 'rango/login.html', {})
-
-
 @login_required
 def restricted(request):
     restricted_text = "Since you are logged in, you can see this text!"
     return render(request, 'rango/restricted.html', {'restricted_text': restricted_text})
-
-
-@login_required
-def user_logout(request):
-    logout(request)
-
-    return HttpResponseRedirect('/rango/')

@@ -51,3 +51,7 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('website', 'picture')
+
+
+class UserResetPassword(forms.Form):
+    reset_email = forms.EmailField()
