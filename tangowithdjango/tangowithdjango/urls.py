@@ -1,11 +1,16 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from django.contrib.auth.views import password_reset_complete
 from registration.backends.simple.views import RegistrationView
+from registration.forms import RegistrationFormUniqueEmail
 import settings
 
 
 # Send the newly registered user to /rango/
 class MyRegistrationView(RegistrationView):
+    # Ensure email uniqueness to allow for password reset
+    form_class = RegistrationFormUniqueEmail
+
     def get_success_url(self, request, user):
         return '/rango/'
 

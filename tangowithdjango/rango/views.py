@@ -1,5 +1,6 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import password_reset, password_reset_confirm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.mail import send_mail
 from django.shortcuts import render
@@ -77,30 +78,6 @@ def about(request):
                     'visits': count}
 
     return render(request, 'rango/about.html', context_dict)
-
-
-def reset_password(request):
-    if request.method == 'POST':
-        form = UserResetPassword(request.POST)
-
-        if form.is_valid():
-            reset_email = form.cleaned_data['reset_email']
-            try:
-                user = User.objects.get(email=reset_email)
-                print 'Sending email to ' + user.email
-            except User.DoesNotExist:
-                user = None
-
-            if user:
-                send_mail('Test', 'Message Test', 'test@example.com',
-                          [user.email], fail_silently=False)
-
-            return HttpResponseRedirect('/rango/')
-
-    else:
-        form = UserResetPassword()
-
-        return render(request, 'rango/password_reset.html', {'form': form})
 
 
 @login_required
