@@ -1,12 +1,9 @@
-from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import password_reset, password_reset_confirm
-from django.http import HttpResponseRedirect, HttpResponse
-from django.core.mail import send_mail
-from django.shortcuts import render
-from models import Category, Page, User
-from forms import CategoryForm, PageForm, UserForm, UserProfileForm, UserResetPassword
 from datetime import datetime
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from models import Category, Page
+from forms import CategoryForm, PageForm
 
 
 def index(request):
