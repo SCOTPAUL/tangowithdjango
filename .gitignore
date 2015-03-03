@@ -52,3 +52,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Private keys
+keys.py
+
