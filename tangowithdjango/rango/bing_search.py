@@ -57,3 +57,17 @@ def run_query(search_terms):
         print "Error when querying the Bing API: " + e
 
     return results
+
+
+def main():
+    results = run_query('hello world')
+
+    for result in results:
+        print result['title']
+        print result['link']
+        print result['summary']
+        print
+
+
+if __name__ == '__main__':
+    main()
