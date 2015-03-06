@@ -48,6 +48,12 @@ def index(request):
 def category(request, category_name_slug):
     context_dict = {}
 
+    if request.method == 'POST':
+        query = request.POST['query'].strip()
+
+        if query:
+            context_dict['result_list'] = run_query(query)
+
     try:
         # Attempt to get the category instance with category_name_slug as its slug
         category = Category.objects.get(slug=category_name_slug)
@@ -76,18 +82,6 @@ def about(request):
                     'visits': count}
 
     return render(request, 'rango/about.html', context_dict)
-
-
-def search(request):
-    result_list = []
-
-    if request.method == 'POST':
-        query = request.POST['query'].strip()
-
-        if query:
-            result_list = run_query(query)
-
-    return render(request, 'rango/search.html', {'result_list': result_list})
 
 
 def track_url(request):
