@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from models import Category, Page
 from forms import CategoryForm, PageForm
 from bing_search import run_query
@@ -88,6 +88,23 @@ def search(request):
             result_list = run_query(query)
 
     return render(request, 'rango/search.html', {'result_list': result_list})
+
+
+def track_url(request):
+    if request.method == 'GET':
+        if 'page_id' in request.GET:
+            page_id = request.GET['page_id']
+
+            try:
+                page = Page.objects.get(pk=page_id)
+                page.views += 1
+                page.save()
+                return redirect(page.url)
+
+            except Page.DoesNotExist:
+                pass
+
+    return redirect(index)
 
 
 @login_required

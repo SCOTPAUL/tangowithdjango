@@ -14,4 +14,5 @@ urlpatterns = patterns('',
                        url(r'^password/reset/$', password_reset, {'post_reset_redirect': '/rango/'}, name='reset_password'),
                        url(r'^password/change/$', password_change, {'post_change_redirect': '/rango/'}, name='change_password'),
                        url(r'^search/$', views.search, name='search'),
+                       url(r'^goto/', views.track_url, name='goto'),
                        )
