@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from models import Category, Page
 from forms import CategoryForm, PageForm
-from rango.bing_search import run_query
+from bing_search import run_query
 
 
 def index(request):
@@ -88,6 +88,7 @@ def search(request):
             result_list = run_query(query)
 
     return render(request, 'rango/search.html', {'result_list': result_list})
+
 
 @login_required
 def add_category(request):

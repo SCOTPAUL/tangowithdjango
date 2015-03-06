@@ -54,7 +54,7 @@ def run_query(search_terms):
                 'summary': result['Description']})
 
     except urllib2.URLError as e:
-        print "Error when querying the Bing API: " + e
+        print "Error when querying the Bing API: " + str(e)
 
     return results
 
