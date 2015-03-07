@@ -7,16 +7,16 @@
         <h1>Register</h1>
     </div>
 
-    <form class="form-horizontal" id="user_register_profile" method="post" action="{% url 'register_profile' %}">
+    <form class="form-horizontal" enctype="multipart/form-data" id="user_register_profile" method="post" action="{% url 'register_profile' %}">
         {% csrf_token %}
 
         <div class="form-group">
-            <label for="website" class="control-label">Website URL</label>
-            <input class="form-control" placeholder="Your Website's URL" id="website" name="website" type="text"/>
+            <label for="id_website" class="control-label">Website URL</label>
+            <input class="form-control" placeholder="Your Website's URL" id="website" name="website" type="url"/>
         </div>
 
         <div class="form-group">
-            <label for="picture">Picture</label>
+            <label for="id_picture">Picture</label>
             <input placeholder="Picture" id="picture" name="picture" type="file"/>
         </div>
 

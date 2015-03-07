@@ -15,4 +15,5 @@ urlpatterns = patterns('',
                        url(r'^password/change/$', password_change, {'post_change_redirect': '/rango/'}, name='change_password'),
                        url(r'^goto/', views.track_url, name='goto'),
                        url(r'^add_profile/$', views.register_profile, name='register_profile'),
+                       url(r'^profile/$', views.profile, name='user_profile'),
                        )

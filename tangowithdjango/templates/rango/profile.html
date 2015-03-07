@@ -1,0 +1,33 @@
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
+{% block title %}Profile{% endblock %}
+
+{% block body_block %}
+    <div class="list-group">
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">Username</h4>
+            <p class="list-group-item-text">{{ username }}</p>
+        </div>
+
+    {% if email %}
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">Email Address</h4>
+            <a href="mailto:{{ email }}" class="list-group-item-text">{{ email }}</a>
+        </div>
+    {% endif %}
+    {% if website %}
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">Website</h4>
+            <a href="{{ website }}" class="list-group-item-text">{{ website }}</a>
+        </div>
+    {% endif %}
+    {% if picture %}
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">Picture</h4>
+            <img class="list-group-item img-responsive" alt="Profile Picture" src="{{ MEDIA_URL }}{{ picture }}"/>
+        </div>
+    {% endif %}
+    </div>
+
+    <a href="{% url 'register_profile' %}">Edit</a>
+{% endblock %}

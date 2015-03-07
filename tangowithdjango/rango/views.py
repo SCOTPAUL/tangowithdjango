@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from models import Category, Page
+from models import Category, Page, UserProfile
 from forms import CategoryForm, PageForm, UserProfileForm
 from bing_search import run_query
 
@@ -102,22 +102,51 @@ def track_url(request):
 
 
 @login_required
+def profile(request):
+    try:
+        user = request.user
+        user_profile = UserProfile.objects.get(user=user)
+
+        context_dict = {'username': user.username,
+                        'email': user.email,
+                        'website': user_profile.website,
+                        'picture': user_profile.picture,
+                        }
+
+        return render(request, 'rango/profile.html', context_dict)
+
+    except UserProfile.DoesNotExist:
+        redirect(index)
+
+
+@login_required
 def register_profile(request):
     if request.method == 'POST':
-        form = UserProfileForm(request.POST)
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            form = UserProfileForm(request.POST, instance=user_profile)
+        except UserProfile.DoesNotExist:
+            form = UserProfileForm(request.POST)
 
         if form.is_valid():
             new_user_profile = form.save(commit=False)
             new_user_profile.user = request.user
-            new_user_profile.save()
 
+            if 'picture' in request.FILES:
+                new_user_profile.picture = request.FILES['picture']
+
+            new_user_profile.save()
             return index(request)
 
         else:
             print form.errors
 
     else:
-        form = UserProfileForm()
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            form = UserProfileForm(instance=user_profile)
+        except UserProfile.DoesNotExist:
+            form = UserProfileForm()
 
     return render(request, 'registration/profile_registration.html', {'form': form})
 
