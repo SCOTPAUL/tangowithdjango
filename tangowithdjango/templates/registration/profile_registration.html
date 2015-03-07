@@ -9,15 +9,14 @@
 
     <form class="form-horizontal" enctype="multipart/form-data" id="user_register_profile" method="post" action="{% url 'register_profile' %}">
         {% csrf_token %}
-
         <div class="form-group">
             <label for="id_website" class="control-label">Website URL</label>
-            <input class="form-control" placeholder="Your Website's URL" id="website" name="website" type="url"/>
+            <input class="form-control" placeholder="Your Website's URL" id="id_website" value="{{ form.website.value }}" name="website" type="url"/>
         </div>
 
         <div class="form-group">
             <label for="id_picture">Picture</label>
-            <input placeholder="Picture" id="picture" name="picture" type="file"/>
+            <input placeholder="Picture" id="id_picture" name="picture" type="file"/>
         </div>
 
         <div class="form-group">
