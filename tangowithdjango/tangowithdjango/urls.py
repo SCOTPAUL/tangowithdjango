@@ -11,7 +11,7 @@ class MyRegistrationView(RegistrationView):
     form_class = RegistrationFormUniqueEmail
 
     def get_success_url(self, request, user):
-        return '/rango/'
+        return '/rango/add_profile/'
 
 
 urlpatterns = patterns('',

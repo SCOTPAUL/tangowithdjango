@@ -1,0 +1,28 @@
+{% extends 'rango/base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body_block %}
+    <div class="page-header">
+        <h1>Register</h1>
+    </div>
+
+    <form class="form-horizontal" id="user_register_profile" method="post" action="{% url 'register_profile' %}">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="website" class="control-label">Website URL</label>
+            <input class="form-control" placeholder="Your Website's URL" id="website" name="website" type="text"/>
+        </div>
+
+        <div class="form-group">
+            <label for="picture">Picture</label>
+            <input placeholder="Picture" id="picture" name="picture" type="file"/>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-default" type="submit" value="Register">Register</button>
+        </div>
+    </form>
+{% endblock %}
+

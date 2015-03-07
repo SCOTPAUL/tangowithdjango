@@ -3,7 +3,7 @@ from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from models import Category, Page
-from forms import CategoryForm, PageForm
+from forms import CategoryForm, PageForm, UserProfileForm
 from bing_search import run_query
 
 
@@ -99,6 +99,27 @@ def track_url(request):
                 pass
 
     return redirect(index)
+
+
+@login_required
+def register_profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST)
+
+        if form.is_valid():
+            new_user_profile = form.save(commit=False)
+            new_user_profile.user = request.user
+            new_user_profile.save()
+
+            return index(request)
+
+        else:
+            print form.errors
+
+    else:
+        form = UserProfileForm()
+
+    return render(request, 'registration/profile_registration.html', {'form': form})
 
 
 @login_required
