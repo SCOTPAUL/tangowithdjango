@@ -11,7 +11,7 @@
         {% csrf_token %}
         <div class="form-group">
             <label for="id_website" class="control-label">Website URL</label>
-            <input class="form-control" placeholder="Your Website's URL" id="id_website" value="{{ form.website.value }}" name="website" type="url"/>
+            <input class="form-control" placeholder="Your Website's URL" id="id_website" {% if form.website.value %}value="{{ form.website.value }}"{% endif %} name="website" type="url"/>
         </div>
 
         <div class="form-group">

@@ -44,7 +44,7 @@
                 {% if pages %}
                     <div class="list-group">
                         {% for page in pages %}
-                            <a class="list-group-item" href={{ page.url }}>{{ page.title }} ({{ page.views }} view{{ page.views|pluralize }})</a>
+                            <a class="list-group-item" href="{% url 'goto' %}?page_id={{ page.id }}">{{ page.title }} ({{ page.views }} view{{ page.views|pluralize }})</a>
                         {% endfor %}
                     </div>
                 {% else %}

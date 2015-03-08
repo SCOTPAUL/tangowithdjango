@@ -5,8 +5,25 @@
 {% block body_block %}
     <form role="form"  method="post" action=".">
         {% csrf_token %}
-
         <h2 class="form-signin-heading">Sign Up Here</h2>
+
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <h4>Error</h4>
+                <ul>
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endif %}
+                    {% for field in form %}
+                        {% if field.errors %}
+                            <li>{{ field.label }} - {{ field.errors|striptags }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
 
         <div class="form-group" >
             <p class="required"> <label for="id_username">Username:</label>
