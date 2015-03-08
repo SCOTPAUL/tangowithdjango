@@ -23,11 +23,11 @@
 
 
                 {% if categories %}
-                    <ul class="list-group">
+                    <div class="list-group">
                         {% for category in categories %}
-                            <li class="list-group-item"><a href="{% url 'category' category.slug %}">{{ category.name }}</a></li>
+                            <a class="list-group-item" href="{% url 'category' category.slug %}">{{ category.name }} ({{ category.likes }} like{{ category.likes|pluralize }})</a>
                         {% endfor %}
-                    </ul>
+                    </div>
                 {% else %}
                     <strong>There are no categories present.</strong>
                 {% endif %}
@@ -42,11 +42,11 @@
 
 
                 {% if pages %}
-                    <ul class="list-group">
+                    <div class="list-group">
                         {% for page in pages %}
-                            <li class="list-group-item"><a href={{ page.url }}>{{ page.title }}</a></li>
+                            <a class="list-group-item" href={{ page.url }}>{{ page.title }} ({{ page.views }} view{{ page.views|pluralize }})</a>
                         {% endfor %}
-                    </ul>
+                    </div>
                 {% else %}
                     <strong>There are no pages present.</strong>
                 {% endif %}

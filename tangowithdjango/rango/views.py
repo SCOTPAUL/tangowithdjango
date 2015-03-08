@@ -48,22 +48,27 @@ def index(request):
 def category(request, category_name_slug):
     context_dict = {}
 
-    if request.method == 'POST':
-        query = request.POST['query'].strip()
-
-        if query:
-            context_dict['result_list'] = run_query(query)
-
     try:
         # Attempt to get the category instance with category_name_slug as its slug
         category = Category.objects.get(slug=category_name_slug)
         context_dict['category_name'] = category.name
 
         # Retrieve all the pages related to the category
-        pages = Page.objects.filter(category=category)
+        pages = Page.objects.filter(category=category).order_by('-views')
 
         context_dict['pages'] = pages
         context_dict['category'] = category
+
+        if request.method == 'POST':
+            if 'query' in request.POST:
+                query = request.POST['query'].strip()
+
+                if query:
+                    context_dict['result_list'] = run_query(query)
+        else:
+            # If GET, increment view count
+            category.views += 1
+            category.save()
 
     except Category.DoesNotExist:
         # Couldn't find the category, so do nothing
