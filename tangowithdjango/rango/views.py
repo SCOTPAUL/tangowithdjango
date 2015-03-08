@@ -148,7 +148,7 @@ def register_profile(request):
 
     else:
         try:
-            user_profile = UserProfile.objects.get(user=request.user)
+            user_profile = UserProfile.objects.get_or_create(user=request.user)[0]
             form = UserProfileForm(instance=user_profile)
         except UserProfile.DoesNotExist:
             form = UserProfileForm()
